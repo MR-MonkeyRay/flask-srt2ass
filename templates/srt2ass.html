@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Fall-Like-Snow | srt字幕处理脚本</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/fontawesome.min.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/AdminLTE.min.css') }}">
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/skin-blue.min.css') }}">
+
+    <link rel="shortcut icon" href="{{ url_for('static',filename='img/fls.ico') }}" />
+    <link rel="bookmark" href="{{ url_for('static',filename='img/fls.ico') }}" />
+
+    <style>
+
+        div#cc {
+            background-color: #222C28;
+            color: #CCCCCC;
+        !important border-radius: 10 px;
+            margin: 20px;
+            padding: 30px;
+            height: 550px;
+            overflow: auto;
+            display: none;
+        }
+
+        textarea {
+            overflow: hidden;
+            background-color: #222C28;
+            color: #CCCCCC;
+        !important border-radius: 10 px;
+            margin: 20px;
+            padding: 30px;
+            height: 450px;
+            width: 95%;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        var filename = 'Output.srt';
+
+        /**
+         * 上传文件按钮
+         */
+        function processFiles(files) {
+            var file = files[0];
+
+            if (!/\.(srt)$/.test(file.name)) {
+                alert("请上传srt格式的字幕文件");
+                return false;
+            }
+            $('#res').attr("disabled", false);
+            $('#download').attr("disabled", true);
+            var message = document.getElementById("message");
+            filename = file.name;
+            message.innerHTML = "文件名：" + file.name + "<br>";
+            message.innerHTML += "文件大小：" + file.size + "字节<br>";
+
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var output = document.getElementById("fileOutput");
+                output.textContent = e.target.result;
+                var outshad = document.getElementById("text");
+                outshad.value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        /**
+         * 导出文件按钮
+         */
+        function downloadAssFile() {
+            var contents = document.getElementById("text");
+            var content = contents.value;
+            var filename_out = filename.replace('.srt', '_已过脚本.ass');
+            const eleLink = document.createElement('a');
+            eleLink.download = filename_out;
+            eleLink.style.display = 'none';
+            const blob = new Blob([content]);
+            eleLink.href = URL.createObjectURL(blob);
+            document.body.appendChild(eleLink);
+            eleLink.click();
+            document.body.removeChild(eleLink);
+        }
+
+        /**
+         * 转码按钮
+         */
+        function ajax_send() {
+            var form = new FormData(document.getElementById("data_form"));
+            $.ajax({
+                url: "{{ url_for('resolve') }}",
+                type: "POST",
+                data: form,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $("#percent").css("width", data.result["percent"] + "%");
+                    $("#percent").text("当前进度：" + data.result["percent"] + "%");
+                    $("#text").val(data.result["text"]);
+                    if (data.result["complete"] == 2) {
+                        $('#download').attr("disabled", false);
+                    } else $('#download').attr("disabled", true);
+                    window.loop = window.setInterval("getPubAjax()", 800);
+                }, error: function (xhr) {
+                    document.getElementById("text").value = xhr.responseText;
+                    alert("xhr");
+                }
+            });
+        }
+
+        function getPubAjax() {
+            var data = JSON.stringify({
+                'getdata': 1
+            });
+            $.ajax({
+                url: "{{ url_for('dataget') }}",
+                type: "POST",
+                data: data,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    $("#percent").css("width", data.result["percent"] + "%");
+                    $("#percent").text("当前进度：" + data.result["percent"] + "%");
+                    $("#text").val(data.result["text"]);
+                    document.getElementById('text').scrollTop = document.getElementById('text').scrollHeight;
+                    if (data.result["complete"] == 2) {
+                        $('#download').attr("disabled", false);
+                        $('#res').attr("disabled", true);
+                        $('#file').attr("disabled", false);
+                        $("#percent").text("已完成（" + data.result["percent"] + "%）");
+                        window.clearInterval(window.loop);
+                    } else if (data.result["complete"] == 1) {
+                        $('#download').attr("disabled", true);
+                        $('#res').attr("disabled", true);
+                        $('#file').attr("disabled", true);
+                    } else if (data.result["complete"] == 0) {
+                        $('#download').attr("disabled", true);
+                        $('#res').attr("disabled", false);
+                        $('#file').attr("disabled", false);
+                    }
+                }, error: function (xhr) {
+                    document.getElementById("text").value = xhr.responseText;
+                    alert("xhr");
+                }
+            });
+        }
+
+        /**
+         * 表单修改按钮
+         */
+        function checkbox1() {
+            if (document.getElementById("exampleCheck1").checked) {
+                document.getElementById("exampleCheck3").checked = false;
+            }
+        }
+
+        function checkbox2() {
+            if (document.getElementById("exampleCheck2").checked) {
+                document.getElementById("exampleCheck3").checked = false;
+            }
+        }
+
+        function checkbox3() {
+            if (document.getElementById("exampleCheck3").checked) {
+                document.getElementById("exampleCheck1").checked = false;
+                document.getElementById("exampleCheck2").checked = false;
+            }
+        }
+    </script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini" style="background-color: #969696">
+<div class="wrapper" style="margin: 2% auto 0 auto; max-width: 1200px;">
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title" style="color:#888888;">SRT 字幕文件转带康复中心样式的 ASS 文件 v1.4</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form role="form" name="sa" method="post" id="data_form">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="exampleInputFile" id="file" style="color:#888888;">选择srt文件</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" id="exampleInputFile"
+                                                   onchange="processFiles(this.files)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- radio -->
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="style" value="option1"
+                                               checked/>
+                                        <label class="form-check-label" style="color:#888888;">使用康复中心原样式</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="style" value="option2">
+                                        <label class="form-check-label" style="color:#888888;">使用夏令营岛样式</label>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" name="trans"
+                                           onchange="checkbox1()" checked/>
+                                    <label class="form-check-label" for="exampleCheck1"
+                                           style="color:#888888;">使用百度机翻</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck2" name="erz"
+                                           onchange="checkbox2()" checked/>
+                                    <label class="form-check-label" for="exampleCheck2" style="color:#888888;">去掉“[]”内语气词和无用“♪♪”</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck3" name="dou"
+                                           onchange="checkbox3()"/>
+                                    <label class="form-check-label" for="exampleCheck3" style="color:#888888;">单行翻译 srt
+                                        改双行翻译 ass </label>
+                                </div>
+                                <div id="percent" style="background-color:#888888;font-size: large;height:30px;width:0;"
+                                     class="row"></div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div id="message" style="color:#888888;"></div>
+                            <div id="cc" style="background-color:#888888;">
+                                <pre style="color:#CCCCCC;"><code id="fileOutput"></code></pre>
+                            </div>
+                            <textarea id="text" name="text" spellcheck="false">{{ ph }}</textarea>
+
+                        </form>
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary" id="res" onclick="ajax_send()" disabled>转码</button>
+                            <button class="btn btn-primary" id="download" style="margin-left: 40px;"
+                                    onclick="downloadAssFile()" disabled><i class="fa fa-download"
+                                                                            aria-hidden="true"></i>下载到本地
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!--/.col (right) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+</div>
+<!-- ./wrapper -->
+
+
+<!-- jQuery 3 -->
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+</body>
+</html>
