@@ -44,13 +44,14 @@ def makef(form):
                     merge[-1] = (p1, n2, p3)
                     continue
         merge.append((n1, n2, n3))
+    # 版权归康复中心字幕组及原开发者所有
     if form['style'] == "option1":
         ass = '[Script Info]\r\n' + ';\r\n' + ';\r\n' + 'Title:\r\n' + 'Original Script:\r\n' + 'Synch Point:0\r\n' + \
               'ScriptType:v4.00+\r\n' + 'ScaledBorderAndShadow: yes\r\n''WrapStyle: 0\r\n' + 'Collisions:Normal\r\n' + \
               'PlayResX:1920\r\n' + 'PlayResY:1080\r\n' + '\r\n' + '[V4+ Styles]\r\n' + \
               'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\r\n' + \
-              'Style: 康复-EN,Arial,50,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,2,2,10,10,10,1\r\n' + \
-              'Style: 康复-CH,Microsoft YaHei,75,&H0069D7FB,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,2.5,2,8,8,10,1\r\n' + \
+              'Style: 布鲁伊-EN,Arial,50,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,2,2,10,10,10,1\r\n' + \
+              'Style: 布鲁伊-CH,Microsoft YaHei,75,&H0069D7FB,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,2.5,2,8,8,10,1\r\n' + \
               '\r\n' + '[Events]\r\n' + 'Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text\r\n' + ''
     elif form['style'] == "option2":
         ass = '[Script Info]\r\n' + ';\r\n' + ';\r\n' + 'Title:\r\n' + 'Original Script:\r\n' + 'Synch Point:0\r\n' + \
