@@ -1,8 +1,11 @@
-FROM python:3.7.17-alpine
+FROM python:3.8.18-alpine
 
 RUN addgroup -S monkeyray \
-&& adduser -S monkeyray -G monkeyray \
-&&  pip3 install flask request jsonify \
+&&  adduser -S monkeyray -G monkeyray \
+&&  pip3 install flask==1.1.4 \
+    requests \
+    jsonify \
+    markupsafe==1.1.1 \
 &&  mkdir -p /tmp/run \
 &&  chown monkeyray:monkeyray -R /tmp/run
 
