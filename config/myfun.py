@@ -50,8 +50,8 @@ def makef(form):
               'ScriptType:v4.00+\r\n' + 'ScaledBorderAndShadow: yes\r\n''WrapStyle: 0\r\n' + 'Collisions:Normal\r\n' + \
               'PlayResX:1920\r\n' + 'PlayResY:1080\r\n' + '\r\n' + '[V4+ Styles]\r\n' + \
               'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\r\n' + \
-              'Style: 布鲁伊-EN,Arial,50,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,2,2,10,10,10,1\r\n' + \
-              'Style: 布鲁伊-CH,Microsoft YaHei,75,&H0069D7FB,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,2.5,2,8,8,10,1\r\n' + \
+              'Style: 布鲁伊-英,Nunito ExtraBold,48,&H00FFFFFF,&H000000FF,&H372E2E2E,&H00000000,-1,0,0,0,100,100,1,0,1,2,0,2,10,10,45,1\r\n' + \
+              'Style: 布鲁伊-中,獅尾腿圓SC-Black,68,&H00F7FEFF,&H000000FF,&H46131414,&H00000000,0,0,0,0,100,100,3,0,1,3.5,0,2,10,10,96,1\r\n' + \
               '\r\n' + '[Events]\r\n' + 'Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text\r\n' + ''
     elif form['style'] == "option2":
         ass = '[Script Info]\r\n' + ';\r\n' + ';\r\n' + 'Title:\r\n' + 'Original Script:\r\n' + 'Synch Point:0\r\n' + \
@@ -93,9 +93,9 @@ def makef(form):
             e_text = n3
             text = ''
         if form['style'] == "option1":
-            line = 'Dialogue: 0,%s,%s,康复-EN,,0,0,0,,%s\r\n' % (n1, n2, e_text)
+            line = 'Dialogue: 0,%s,%s,布鲁伊-英,,0,0,0,,%s\r\n' % (n1, n2, e_text)
             ass += line
-            line = 'Dialogue: 0,%s,%s,康复-CH,,0,0,0,,%s\r\n' % (n1, n2, text)
+            line = 'Dialogue: 0,%s,%s,布鲁伊-中,,0,0,0,,%s\r\n' % (n1, n2, text)
             ass = ass + line
         elif form['style'] == "option2":
             line = 'Dialogue: 0,%s,%s,夏令营岛-EN,,0,0,0,,%s\r\n' % (n1, n2, e_text)
